@@ -280,6 +280,7 @@
 	
 	minit = 0
 	while( minit < maxit ) {
+	  #cat(paste(".subnp: ", minit, " < ", maxit, "\n"))
 		minit = minit + 1
 		
 		if( ch > 0 ) {
@@ -343,8 +344,19 @@
 
 		go = -1
 		lambda = lambda / 10
-		while( go <= 0 ) {
+		lambdaPrev = lambda/2+1
+		if (lambda == 0.0) {
+		   cat(paste(".subnp go lambda is ZERO: ", go, " ", lambda,"\n"))
+		}
+
+		while( go <= 0 && lambda != 0.0 ) {
+		  if (lambdaPrev == lambda) {
+		    cat(paste(".subnp go lambda unchanged: ", go, " ", lambda, lambdaPrev, "\n"))
+		  }
+		  lambdaPrev = lambda;
+		  
 			cz = try(chol( hessv + lambda * diag( as.numeric(dx * dx), length(dx), length(dx) ) ),  silent = TRUE)
+
 			if(inherits(cz, "try-error")){
 				p = p * vscale[ (neq + 2):(nc + np + 1) ]  # unscale the parameter vector
 				if( nc > 0 ) {
